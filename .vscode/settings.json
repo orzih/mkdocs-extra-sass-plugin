@@ -1,0 +1,9 @@
+{
+    "cSpell.words": [
+        "mkdocs",
+        "orzih"
+    ],
+    "python.linting.pylintEnabled": false,
+    "python.linting.flake8Enabled": true,
+    "python.linting.enabled": true
+}
