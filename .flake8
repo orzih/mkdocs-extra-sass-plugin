@@ -1,0 +1,4 @@
+[flake8]
+max-line-length = 88
+exclude = .anyenv node_modules tests
+ignore = D100, D105, D107, D202, D400, T499
