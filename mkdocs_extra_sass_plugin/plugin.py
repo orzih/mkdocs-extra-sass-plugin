@@ -9,6 +9,7 @@ import sass
 from bs4 import BeautifulSoup
 from livereload import Server
 from mkdocs.config import Config
+from mkdocs.config import config_options
 from mkdocs.plugins import BasePlugin
 from mkdocs.structure.pages import Page
 from mkdocs.utils import normalize_url
@@ -17,7 +18,6 @@ _T_SassEntry = TypeVar('_T', bound='_SassEntry')
 
 
 _logger = logging.getLogger('mkdocs.extra-sass')
-
 
 class ExtraSassPlugin(BasePlugin):
     """Extra Sass Plugin"""
@@ -66,7 +66,8 @@ class ExtraSassPlugin(BasePlugin):
         return self.__entry_point
 
     def _build_entry(self, config: Config) -> _T_SassEntry:
-        entry_point = _SassEntry.search_entry_point()
+        style_path = config["extra"].get("extra_sass_path") if config["extra"].get("extra_sass_path") else "extra_sass"
+        entry_point = _SassEntry.search_entry_point(style_path)
         if entry_point.is_available:
             try:
                 site_dir = config["site_dir"]
@@ -90,15 +91,15 @@ class ExtraSassPlugin(BasePlugin):
 
 class _SassEntry(ABC):
 
-    _styles_dir = 'extra_sass'
     _style_filenames = [
         'style.css.sass', 'style.sass',
         'style.css.scss', 'style.scss',
     ]
 
     @classmethod
-    def search_entry_point(cls: Type[_T_SassEntry]) -> _T_SassEntry:
-        d = cls._styles_dir
+    def search_entry_point(cls: Type[_T_SassEntry], style_dir) -> _T_SassEntry:
+        _logger.info(style_dir)
+        d = style_dir
         if os.path.isdir(d):
             for f in cls._style_filenames:
                 path = os.path.join(d, f)
